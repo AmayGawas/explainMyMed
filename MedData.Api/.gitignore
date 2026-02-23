@@ -1,59 +1,37 @@
-# Ignore build outputs
-/bin/
-/obj/
+// ...existing code...
+# Build outputs
 **/bin/
 **/obj/
-Debug/
-Release/
-publish/
-
-# Visual Studio and user-specific files
-.vs/
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-
-# Rider and JetBrains
-.idea/
-
-# VS Code workspace settings
-.vscode/
-
-# NuGet
+bin/
+obj/
+*.dll
+*.pdb
+*.deps.json
+project.assets.json
+project.nuget.cache
+*.cache
 *.nupkg
 packages/
-project.lock.json
-project.nuget.cache
-*.nuget.props
 
-# ASP.NET Core / app settings (don't commit secrets or local settings)
+# Visual Studio / IDE
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+*.iml
+
+# Solution/workspace files
+*.slnx
+
+# Local config / secrets
 appsettings.Development.json
-local.settings.json
-secrets.json
-appsettings.*.Local.json
 
-# Logs, databases and temporary files
+# Logs and OS files
 *.log
-*.sqlite
-*.db
-*.cache
-*.tmp
-~$*
-
-# OS files
-Thumbs.db
-Desktop.ini
 .DS_Store
-
-# Compiled binaries and symbols
-*.dll
-*.exe
-*.pdb
-
-# Misc
-obj/**/staticwebassets.build.json
-obj/**/staticwebassets.build.endpoints.json
-
-# Keep user-specific launch settings out if you prefer (uncomment if desired)
-# Properties/launchSettings.json
+Thumbs.db
+// ...existing code...
