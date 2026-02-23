@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <!-- Prevent SDK from auto-generating assembly and target framework attributes -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+  </PropertyGroup>
+</Project>
