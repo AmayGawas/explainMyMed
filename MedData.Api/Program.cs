@@ -3,6 +3,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add Swagger services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient<OpenAiMedicineService>();
 
 var app = builder.Build();
 
