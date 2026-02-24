@@ -1,9 +1,13 @@
+using ExplainMyMed.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add Swagger services
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient<OpenAiMedicineService>();
+builder.Services.AddScoped<OpenAiMedicineService>();
 
 var app = builder.Build();
 
@@ -33,6 +37,8 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast");
+
+app.MapControllers();
 
 app.Run();
 

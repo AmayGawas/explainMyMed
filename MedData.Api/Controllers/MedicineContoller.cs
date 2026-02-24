@@ -1,5 +1,10 @@
+using Microsoft.AspNetCore.Mvc;
+using ExplainMyMed.Infrastructure;
+
+namespace MedData.Api.Controllers;
+
 [ApiController]
-[Route("api/medicine")]
+[Route("api/[controller]")]
 public class MedicineController : ControllerBase
 {
     private readonly OpenAiMedicineService _service;
