@@ -25,7 +25,8 @@ public class OpenAiMedicineService
         }
 
         var prompt = $"""
-Return ONLY valid JSON. No markdown. No explanations.:
+Return ONLY valid JSON. No markdown. No explanations.
+Fields:
 manufacturer,
 usedFor,
 dosage,
@@ -72,7 +73,15 @@ Medicine: {medName}
             return $"Groq error: {response.StatusCode} - {error} - RetryAfter:{retryAfter} - Headers:{headers}";
         }
 
-        var json = await response.Content.ReadAsStringAsync();
-        return json;
+        var raw = await response.Content.ReadAsStringAsync();
+
+        using var doc = JsonDocument.Parse(raw);
+        var content = doc.RootElement
+            .GetProperty("choices")[0]
+            .GetProperty("message")
+            .GetProperty("content")
+            .GetString();
+
+        return content!.Trim();
     }
 }
