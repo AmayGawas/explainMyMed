@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Text;
+using System.Linq;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 
@@ -13,13 +14,18 @@ public class OpenAiMedicineService
     public OpenAiMedicineService(HttpClient httpClient, IConfiguration configuration)
     {
         _httpClient = httpClient;
-        _apiKey = configuration["Gemini:ApiKey"];
+        _apiKey = configuration["Groq:ApiKey"];
     }
 
     public async Task<string> GetMedicineInfo(string medName)
     {
+        if (string.IsNullOrWhiteSpace(_apiKey))
+        {
+            return "Groq error: missing API key. Ensure configuration key 'Groq:ApiKey' is set.";
+        }
+
         var prompt = $"""
-Give medicine info strictly in JSON with fields:
+Return ONLY valid JSON. No markdown. No explanations.:
 manufacturer,
 usedFor,
 dosage,
@@ -39,15 +45,10 @@ Medicine: {medName}
 
         var requestBody = new
         {
-            contents = new[]
+            model = "openai/gpt-oss-120b",
+            messages = new[]
             {
-                new
-                {
-                    parts = new[]
-                    {
-                        new { text = prompt }
-                    }
-                }
+                new { role = "user", content = prompt }
             }
         };
 
@@ -55,9 +56,10 @@ Medicine: {medName}
 
         var request = new HttpRequestMessage(
             HttpMethod.Post,
-            $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={_apiKey}"
+            "https://api.groq.com/openai/v1/chat/completions"
         );
 
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
         request.Content = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
         var response = await _httpClient.SendAsync(request);
@@ -65,7 +67,9 @@ Medicine: {medName}
         if (!response.IsSuccessStatusCode)
         {
             var error = await response.Content.ReadAsStringAsync();
-            return $"Gemini error: {response.StatusCode} - {error}";
+            var retryAfter = response.Headers.RetryAfter?.ToString();
+            var headers = string.Join("; ", response.Headers.Select(h => $"{h.Key}={string.Join(',', h.Value)}"));
+            return $"Groq error: {response.StatusCode} - {error} - RetryAfter:{retryAfter} - Headers:{headers}";
         }
 
         var json = await response.Content.ReadAsStringAsync();
